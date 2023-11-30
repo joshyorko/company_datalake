@@ -14,6 +14,7 @@ module "glue" {
   crawler_name          = var.crawler_name
   s3_target_path        = var.s3_target_path
   glue_service_role_arn = module.iam_for_glue.glue_role_arn
+  glue_scripts_bucket_name = var.glue_scripts_bucket_name
 }
 
 module "data_lake" {

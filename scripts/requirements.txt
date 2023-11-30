@@ -1,5 +1,0 @@
-tqdm
-Faker
-boto3
-fastapi
-uvicorn

@@ -17,3 +17,8 @@ variable "glue_service_role_arn" {
   description = "The ARN of the IAM role for the Glue service"
   type        = string
 }
+
+variable "glue_scripts_bucket_name" {
+  description = "The name of the S3 bucket for Glue scripts"
+  type        = string
+}

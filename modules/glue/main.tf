@@ -14,3 +14,29 @@ resource "aws_glue_crawler" "crawler" {
   role = var.glue_service_role_arn
   // Additional configurations can be added as needed
 }
+
+resource "aws_glue_job" "gold_lake_job" {
+  name       = "gold-lake-job"
+  role_arn   = var.glue_service_role_arn
+  glue_version = "4.0"  # Specify the Glue version here
+
+  command {
+    script_location = "s3://${var.glue_scripts_bucket_name}/glue-jobs/gold_lake.py"
+    python_version  = "3"
+  }
+
+  # Other configurations...
+}
+
+resource "aws_glue_job" "silver_lake_job" {
+  name       = "silver-lake-job"
+  role_arn   = var.glue_service_role_arn
+  glue_version = "4.0"  # Specify the Glue version here
+
+  command {
+    script_location = "s3://${var.glue_scripts_bucket_name}/glue-jobs/silver_lake.py"
+    python_version  = "3"
+  }
+
+  # Other configurations...
+}
