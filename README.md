@@ -1,4 +1,7 @@
-# AWS Glue and Data Lake Terraform Project
+# COMPANY DATALAKE
+
+![Company Logo](logo.png)
+
 
 This project contains Terraform configuration files for setting up an AWS Glue and a data lake. It also includes Python and Go scripts for creating a company and managing AWS resources.
 
