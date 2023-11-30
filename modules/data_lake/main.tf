@@ -1,14 +1,16 @@
 resource "aws_s3_bucket" "data_lake" {
   bucket = var.bucket_name
+  force_destroy  = true
   // ... other configurations ...
 }
 
 resource "aws_s3_bucket" "glue_scripts_bucket" {
   bucket = var.glue_scripts_bucket_name
+  force_destroy  = true
   // Other configurations...
 
   provisioner "local-exec" {
-  command = "aws s3 cp ../../scripts/glue-jobs/ s3://${self.bucket}/glue-jobs/ --recursive"
+  command = "aws s3 cp scripts/glue-jobs/ s3://${self.bucket}/glue-jobs/ --recursive"
     }
 
 }
