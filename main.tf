@@ -21,5 +21,6 @@ module "data_lake" {
   bucket_name        = var.bucket_name
   versioning_enabled = var.versioning_enabled
   aws_s3_bucket_acl  = var.aws_s3_bucket_acl
+  glue_scripts_bucket_name = var.glue_scripts_bucket_name
 
 }

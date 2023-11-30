@@ -15,3 +15,8 @@ variable "aws_s3_bucket_acl" {
   default     = "private"
 }
 // Add any additional variables for further configurations
+
+variable "glue_scripts_bucket_name" {
+  description = "The name of the S3 bucket"
+  type        = string
+}

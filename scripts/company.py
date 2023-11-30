@@ -2,7 +2,7 @@ from faker import Faker
 import csv
 from tqdm import tqdm
 import time
-import boto3
+
 
 fake = Faker()
 
