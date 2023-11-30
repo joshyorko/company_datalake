@@ -33,7 +33,6 @@ variable "s3_target_path_silver" {
   description = "S3 target path for silver lake"
   type        = string
 }
-
 variable "s3_target_path_gold" {
   description = "S3 target path for gold lake"
   type        = string
