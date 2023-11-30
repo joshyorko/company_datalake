@@ -3,13 +3,22 @@ variable "glue_database_name" {
   type        = string
 }
 
-variable "crawler_name" {
-  description = "The name of the Glue crawler"
+variable "silver_lake_crawler_name" {
+  description = "The name of the  silver_lake_crawler_name Glue crawler"
+  type        = string
+}
+variable "gold_lake_crawler_name" {
+  description = "The name of the  gold_lake_crawler_name Glue crawler"
+  type        = string
+} 
+
+variable "s3_target_path_silver" {
+  description = "The S3 path for the silver lake"
   type        = string
 }
 
-variable "s3_target_path" {
-  description = "The S3 path to be crawled"
+variable "s3_target_path_gold" {
+  description = "The S3 path for the gold lake"
   type        = string
 }
 

@@ -11,8 +11,10 @@ module "iam_for_glue" {
 module "glue" {
   source                = "./modules/glue"
   glue_database_name    = var.glue_database_name
-  crawler_name          = var.crawler_name
-  s3_target_path        = var.s3_target_path
+  silver_lake_crawler_name = var.silver_lake_crawler
+  gold_lake_crawler_name = var.gold_lake_crawler
+  s3_target_path_silver = var.s3_target_path_silver
+  s3_target_path_gold = var.s3_target_path_gold
   glue_service_role_arn = module.iam_for_glue.glue_role_arn
   glue_scripts_bucket_name = var.glue_scripts_bucket_name
 }

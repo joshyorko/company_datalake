@@ -3,6 +3,7 @@ from awsglue.context import GlueContext
 from awsglue.job import Job
 from pyspark.context import SparkContext
 from awsglue.utils import getResolvedOptions
+import boto3
 
 # Initialize Glue and Spark contexts
 sc = SparkContext()
@@ -36,3 +37,7 @@ departments_df.write.mode("overwrite").partitionBy("Location").parquet(s3_gold_t
 
 # Commit the job
 job.commit()
+
+# Start Glue Crawler
+glue_client = boto3.client('glue', region_name='us-east-1')  # Specify your region
+glue_client.start_crawler(Name='gold_lake_crawler')

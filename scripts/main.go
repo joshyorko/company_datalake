@@ -85,7 +85,7 @@ func main() {
 
     // Bucket and Database Names
     bucketName := "portfolio-company-datalake-jy" // Your S3 bucket name
-    databaseName := "fake-companies"              // Database name for the file path
+    databaseName := "bronze-data"              // Database name for the file path
 
     // Use the uniqueFilename function to generate filenames
     companyFilename := uniqueFilename("companies-data")
@@ -149,6 +149,7 @@ func main() {
         
             employee := Employee{
                 CompanyName: company.Name,
+                StartDate:  RandomDate(),
                 FirstName:   firstName,
                 LastName:    lastName,
                 Email:       email,

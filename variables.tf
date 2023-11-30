@@ -20,15 +20,25 @@ variable "glue_database_name" {
   type        = string
 }
 
-variable "crawler_name" {
-  description = "Name of the Glue crawler"
+variable "silver_lake_crawler" {
+  description = "Name of the silver_lake_crawler Glue crawler"
   type        = string
 }
 
-variable "s3_target_path" {
-  description = "The S3 path to be crawled"
+variable "gold_lake_crawler" {
+  description = "Name of the gold_lake_crawler Glue crawler"
   type        = string
 }
+variable "s3_target_path_silver" {
+  description = "S3 target path for silver lake"
+  type        = string
+}
+
+variable "s3_target_path_gold" {
+  description = "S3 target path for gold lake"
+  type        = string
+}
+
 
 variable "glue_iam_role_name" {
   description = "The name of the IAM role for AWS Glue"

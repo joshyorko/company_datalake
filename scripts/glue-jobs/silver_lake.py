@@ -1,4 +1,5 @@
 import sys
+import boto3
 from awsglue.context import GlueContext
 from awsglue.job import Job
 from pyspark.context import SparkContext
@@ -17,8 +18,8 @@ job = Job(glueContext)
 job.init(args['JOB_NAME'], args)
 
 # Hardcoded S3 paths
-s3_source = "s3://portfolio-company-datalake-jy/fake-companies"
-s3_target = "s3://portfolio-company-datalake-jy/processed-data"  # Update this to your desired target path
+s3_source = "s3://portfolio-company-datalake-jy/bronze-data"
+s3_target = "s3://portfolio-company-datalake-jy/silver-data"  # Update this to your desired target path
 
 # Read CSV data from S3
 companies_df = spark.read.option("header", "true").option("inferSchema", "true").csv(s3_source + "/companies/")
@@ -34,3 +35,8 @@ departments_df.write.mode("overwrite").parquet(s3_target + "/departments/")
 
 # Commit the job
 job.commit()
+
+
+# Start Glue Crawler
+glue_client = boto3.client('glue', region_name='us-east-1')  # Specify your region
+glue_client.start_crawler(Name='silver_lake_crawler')
