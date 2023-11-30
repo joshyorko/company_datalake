@@ -26,6 +26,7 @@ type SoftwareCompany struct {
 
 type Employee struct {
     CompanyName string
+    StartDate   string
     FirstName   string
     LastName    string
     Email       string
@@ -118,7 +119,7 @@ func main() {
         company := SoftwareCompany{
             Name:      name,
             Industry:  fake.Industry(),
-            Employees: rand.Intn(10000),
+            Employees: rand.Intn(20000),
             Revenue:   rand.Intn(1000000000),
             Location:  fake.City(),
         }

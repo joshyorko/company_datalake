@@ -27,11 +27,14 @@ employees_df = spark.read.option("header", "true").option("inferSchema", "true")
 departments_df = spark.read.option("header", "true").option("inferSchema", "true").csv(s3_source + "/departments/")
 
 # Process Data (transformations, cleaning, etc.)
+# remove duplicates from companies Name column
+companies_df = companies_df.dropDuplicates(["Name"])
+
 
 # Write Data to S3 in Parquet format
-companies_df.write.mode("overwrite").parquet(s3_target + "/companies/")
-employees_df.write.mode("overwrite").parquet(s3_target + "/employees/")
-departments_df.write.mode("overwrite").parquet(s3_target + "/departments/")
+companies_df.write.mode("append").parquet(s3_target + "/companies_silver/")
+employees_df.write.mode("append").parquet(s3_target + "/employees_silver/")
+departments_df.write.mode("append").parquet(s3_target + "/departments_silver/")
 
 # Commit the job
 job.commit()
