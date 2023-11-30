@@ -27,7 +27,7 @@ class SoftwareCompany:
         unique_names.add(self.name)
         
         self.industry = fake.bs()
-        self.employees = fake.random_int(min=1, max=1000)
+        self.employees = fake.random_int(min=1, max=10000)
         self.revenue = fake.random_int(min=100000, max=1000000000)
         self.location = fake.city()
         return self

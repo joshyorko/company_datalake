@@ -1,27 +1,31 @@
-resource "aws_s3_bucket" "data_lake_bucket" {
+resource "aws_s3_bucket" "data_lake" {
   bucket = var.bucket_name
-  acl    = "private"
+  // ... other configurations ...
+}
 
-  versioning {
-    enabled = true
-  }
 
-  server_side_encryption_configuration {
-    rule {
-      apply_server_side_encryption_by_default {
-        sse_algorithm = "aws:kms"
-        kms_master_key_id = aws_kms_key.data_lake_key.arn
-      }
+
+
+resource "aws_s3_bucket_lifecycle_configuration" "data_lake_lifecycle" {
+  bucket = aws_s3_bucket.data_lake.id
+
+  rule {
+    id      = "log"
+    status  = "Enabled"  # Replaces the 'enabled' field
+
+    filter {
+      prefix = "logs/"
+    }
+
+    transition {
+      days          = 30
+      storage_class = "STANDARD_IA" 
+    }
+
+    expiration {
+      days = 365
     }
   }
-}
 
-resource "aws_kms_key" "data_lake_key" {
-  description             = "KMS key for data lake bucket"
-  deletion_window_in_days = 7
-}
-
-variable "bucket_name" {
-  description = "The name of the bucket to create for the data lake"
-  type        = string
+  # ... other rules if needed ...
 }

@@ -1,26 +1,19 @@
-variable "region" {
-  description = "The region where the AWS Glue resources will be created"
-  type        = string
-  default     = "us-west-2"
-}
-
-variable "glue_job_name" {
-  description = "The name of the AWS Glue job"
+variable "glue_database_name" {
+  description = "The name of the Glue database"
   type        = string
 }
 
-variable "glue_role_arn" {
-  description = "The ARN of the IAM role that AWS Glue can assume to access data in other services"
+variable "crawler_name" {
+  description = "The name of the Glue crawler"
   type        = string
 }
 
-variable "glue_script_location" {
-  description = "The S3 location of the AWS Glue ETL script"
+variable "s3_target_path" {
+  description = "The S3 path to be crawled"
   type        = string
 }
 
-variable "glue_script_arguments" {
-  description = "The arguments that get passed to the AWS Glue ETL script"
-  type        = map(string)
-  default     = {}
+variable "glue_service_role_arn" {
+  description = "The ARN of the IAM role for the Glue service"
+  type        = string
 }

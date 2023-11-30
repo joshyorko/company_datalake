@@ -1,14 +1,17 @@
-variable "data_lake_name" {
-  description = "The name of the data lake"
+variable "bucket_name" {
+  description = "The name of the S3 bucket"
   type        = string
 }
 
-variable "data_lake_storage" {
-  description = "The amount of storage for the data lake in GB"
-  type        = number
+variable "versioning_enabled" {
+  description = "Boolean to enable versioning"
+  type        = bool
+  default     = true
 }
 
-variable "data_lake_region" {
-  description = "The AWS region where the data lake should be created"
+variable "aws_s3_bucket_acl" {
+  description = "The ACL to apply to the bucket"
   type        = string
+  default     = "private"
 }
+// Add any additional variables for further configurations

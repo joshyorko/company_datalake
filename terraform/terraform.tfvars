@@ -1,0 +1,9 @@
+region             = "us-east-1"
+bucket_name        = "portfolio-company-datalake-jy"
+versioning_enabled = true
+glue_database_name = "company_glue_database"
+crawler_name       = "company_data_crawler"
+s3_target_path     = "s3://portfolio-company-datalake-jy"
+glue_iam_role_name = "company_glue_service_role"
+glue_policy_name   = "company_glue_service_policy"
+aws_s3_bucket_acl  = "private"

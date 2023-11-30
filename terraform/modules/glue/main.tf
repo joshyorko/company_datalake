@@ -1,24 +1,16 @@
-resource "aws_glue_catalog_database" "example" {
-  name = var.database_name
+resource "aws_glue_catalog_database" "database" {
+  name = var.glue_database_name
+  // Optionally, you can add more configurations here
 }
 
-resource "aws_glue_crawler" "example" {
-  database_name = aws_glue_catalog_database.example.name
-  name          = var.crawler_name
-  role          = var.iam_role
+resource "aws_glue_crawler" "crawler" {
+  name         = var.crawler_name
+  database_name = aws_glue_catalog_database.database.name
+
   s3_target {
-    path = var.s3_path
+    path = var.s3_target_path
   }
-}
 
-resource "aws_glue_job" "example" {
-  name     = var.job_name
-  role_arn = var.iam_role
-  command {
-    script_location = var.script_path
-    python_version  = "3"
-  }
-  default_arguments = {
-    "--TempDir" = var.temp_dir
-  }
+  role = var.glue_service_role_arn
+  // Additional configurations can be added as needed
 }

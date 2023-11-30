@@ -1,9 +1,9 @@
-output "glue_output" {
-  description = "Output from the AWS Glue module"
-  value       = module.glue.some_output
+output "data_lake_s3_bucket_name" {
+  value       = module.data_lake.s3_bucket_name
+  description = "The name of the S3 bucket used for the data lake"
 }
 
-output "data_lake_output" {
-  description = "Output from the Data Lake module"
-  value       = module.data_lake.some_output
+output "data_lake_s3_bucket_arn" {
+  value       = module.data_lake.s3_bucket_arn
+  description = "The ARN of the S3 bucket used for the data lake"
 }
