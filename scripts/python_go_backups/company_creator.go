@@ -1,43 +1,45 @@
 package main
 
 import (
-	"encoding/csv"
 	"fmt"
 	"math/rand"
-	"os"
 	"strings"
 	"time"
 
 	"github.com/icrowley/fake"
+	"github.com/xitongsys/parquet-go-source/local"
+	"github.com/xitongsys/parquet-go/parquet"
+	"github.com/xitongsys/parquet-go/writer"
 )
 
+// ... rest of your code ...
 type SoftwareCompany struct {
-	Name      string
-	Industry  string
-	Employees int
-	Revenue   int
-	Location  string
+	Name      string `parquet:"name=name, type=BYTE_ARRAY, convertedtype=UTF8"`
+	Industry  string `parquet:"name=industry, type=BYTE_ARRAY, convertedtype=UTF8"`
+	Employees int32  `parquet:"name=employees, type=INT32"`
+	Revenue   int64  `parquet:"name=revenue, type=INT64"`
+	Location  string `parquet:"name=location, type=BYTE_ARRAY, convertedtype=UTF8"`
 }
 
 type Employee struct {
-	CompanyName string
-	FirstName   string
-	LastName    string
-	Email       string
-	Position    string
-	Salary      int
+	CompanyName string `parquet:"name=companyName, type=BYTE_ARRAY, convertedtype=UTF8"`
+	FirstName   string `parquet:"name=firstName, type=BYTE_ARRAY, convertedtype=UTF8"`
+	LastName    string `parquet:"name=lastName, type=BYTE_ARRAY, convertedtype=UTF8"`
+	Email       string `parquet:"name=email, type=BYTE_ARRAY, convertedtype=UTF8"`
+	Position    string `parquet:"name=position, type=BYTE_ARRAY, convertedtype=UTF8"`
+	Salary      int32  `parquet:"name=salary, type=INT32"`
 }
 
 type Department struct {
-	CompanyName    string
-	DepartmentName string
-	ManagerID      int
-	Budget         int
-	Location       string
-	StartDate      string
-	EndDate        string
-	DepartmentSize int
-	FunctionalArea string
+	CompanyName    string `parquet:"name=companyName, type=BYTE_ARRAY, convertedtype=UTF8"`
+	DepartmentName string `parquet:"name=departmentName, type=BYTE_ARRAY, convertedtype=UTF8"`
+	ManagerID      int32  `parquet:"name=managerID, type=INT32"`
+	Budget         int32  `parquet:"name=budget, type=INT32"`
+	Location       string `parquet:"name=location, type=BYTE_ARRAY, convertedtype=UTF8"`
+	StartDate      string `parquet:"name=startDate, type=BYTE_ARRAY, convertedtype=UTF8"`
+	EndDate        string `parquet:"name=endDate, type=BYTE_ARRAY, convertedtype=UTF8"`
+	DepartmentSize int32  `parquet:"name=departmentSize, type=INT32"`
+	FunctionalArea string `parquet:"name=functionalArea, type=BYTE_ARRAY, convertedtype=UTF8"`
 }
 
 func RandomDate() string {
@@ -58,9 +60,19 @@ func main() {
 	fmt.Scan(&companySize)
 
 	// Creating Companies
-	companyFile, _ := os.Create("companies_go.csv")
-	companyWriter := csv.NewWriter(companyFile)
-	companyWriter.Write([]string{"Name", "Industry", "Employees", "Revenue", "Location"})
+	companyFile, err := local.NewLocalFileWriter("companies_go.parquet")
+	if err != nil {
+		fmt.Println("Error creating company file:", err)
+		return
+	}
+
+	companyWriter, err := writer.NewParquetWriter(companyFile, new(SoftwareCompany), 2)
+	if err != nil {
+		fmt.Println("Error creating company writer:", err)
+		return
+	}
+	companyWriter.RowGroupSize = 128 * 1024 * 1024 //128M
+	companyWriter.CompressionType = parquet.CompressionCodec_SNAPPY
 
 	var companies []SoftwareCompany
 	uniqueNames := make(map[string]bool)
@@ -84,45 +96,46 @@ func main() {
 		company := SoftwareCompany{
 			Name:      name,
 			Industry:  fake.Industry(),
-			Employees: rand.Intn(20000),
-			Revenue:   rand.Intn(1000000000),
+			Employees: int32(rand.Intn(20000)),
+			Revenue:   int64(rand.Intn(1000000000)),
 			Location:  fake.City(),
 		}
 		companies = append(companies, company)
-		companyWriter.Write([]string{company.Name, company.Industry, fmt.Sprint(company.Employees), fmt.Sprint(company.Revenue), company.Location})
+		companyWriter.Write(&company)
 	}
-	companyWriter.Flush()
+	companyWriter.WriteStop()
 	companyFile.Close()
 
 	// Creating Employees
-	employeeFile, _ := os.Create("employees_go.csv")
-	employeeWriter := csv.NewWriter(employeeFile)
-	employeeWriter.Write([]string{"Company_Name", "First_Name", "Last_Name", "Email", "Position", "Salary"})
+	employeeFile, _ := local.NewLocalFileWriter("employees_go.parquet")
+	employeeWriter, _ := writer.NewParquetWriter(employeeFile, new(Employee), 2)
+	employeeWriter.RowGroupSize = 128 * 1024 * 1024 //128M
+	employeeWriter.CompressionType = parquet.CompressionCodec_SNAPPY
 
 	for _, company := range companies {
-		domain := strings.Replace(strings.ToLower(company.Name), " ", "", -1)
-		for i := 0; i < company.Employees; i++ {
+		for i := 0; i < int(company.Employees); i++ {
 			firstName := fake.FirstName()
 			lastName := fake.LastName()
-			email := fmt.Sprintf("%s.%s@%s.com", strings.ToLower(firstName), strings.ToLower(lastName), domain)
+			email := fmt.Sprintf("%s.%s@%s.com", strings.ToLower(firstName), strings.ToLower(lastName), strings.ToLower(company.Name))
 			employee := Employee{
 				CompanyName: company.Name,
 				FirstName:   firstName,
 				LastName:    lastName,
 				Email:       email,
 				Position:    fake.JobTitle(),
-				Salary:      rand.Intn(150000),
+				Salary:      int32(rand.Intn(150000)),
 			}
-			employeeWriter.Write([]string{employee.CompanyName, employee.FirstName, employee.LastName, employee.Email, employee.Position, fmt.Sprint(employee.Salary)})
+			employeeWriter.Write(&employee)
 		}
 	}
-	employeeWriter.Flush()
+	employeeWriter.WriteStop()
 	employeeFile.Close()
 
 	// Creating Departments
-	departmentFile, _ := os.Create("departments_go.csv")
-	departmentWriter := csv.NewWriter(departmentFile)
-	departmentWriter.Write([]string{"Company_Name", "Department_Name", "Manager_ID", "Budget", "Location", "Start_Date", "End_Date", "Department_Size", "Functional_Area"})
+	departmentFile, _ := local.NewLocalFileWriter("departments_go.parquet")
+	departmentWriter, _ := writer.NewParquetWriter(departmentFile, new(Department), 2)
+	departmentWriter.RowGroupSize = 128 * 1024 * 1024 //128M
+	departmentWriter.CompressionType = parquet.CompressionCodec_SNAPPY
 
 	for _, company := range companies {
 		numDepartments := rand.Intn(5) + 1 // Random number of departments
@@ -130,18 +143,18 @@ func main() {
 			department := Department{
 				CompanyName:    company.Name,
 				DepartmentName: "Department of " + fake.Industry(),
-				ManagerID:      rand.Intn(999999),
-				Budget:         rand.Intn(500000),
+				ManagerID:      int32(rand.Intn(999999)),
+				Budget:         int32(rand.Intn(500000)),
 				Location:       fake.City(),
 				StartDate:      RandomDate(),
 				EndDate:        RandomDate(),
-				DepartmentSize: rand.Intn(100),
+				DepartmentSize: int32(rand.Intn(100)),
 				FunctionalArea: fake.Industry(),
 			}
-			departmentWriter.Write([]string{department.CompanyName, department.DepartmentName, fmt.Sprint(department.ManagerID), fmt.Sprint(department.Budget), department.Location, department.StartDate, department.EndDate, fmt.Sprint(department.DepartmentSize), department.FunctionalArea})
+			departmentWriter.Write(&department)
 		}
 	}
-	departmentWriter.Flush()
+	departmentWriter.WriteStop()
 	departmentFile.Close()
 
 	totalTime := time.Since(startTime)

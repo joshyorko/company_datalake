@@ -139,7 +139,7 @@ def create_and_write_departments_to_s3(companies, s3_client, bucket_name, databa
 if __name__ == "__main__":
     s3_client = boto3.client('s3')
     bucket_name = 'portfolio-company-datalake-jy'
-    database_name = 'fake-companies'  # Replace with your actual database name
+    database_name = 'bronze-data'  # Replace with your actual database name
 
     # Create and write companies to S3
     companies = create_and_write_software_company_to_s3(int(input('Enter Amount of Companies to Create: ')), s3_client, bucket_name, database_name, fake)
